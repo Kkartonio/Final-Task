@@ -3,6 +3,10 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using FluentAssertions;
+using log4net;
+using log4net.Config;
+using System;
+using System.IO;
 
 namespace WebDriver3
 {
@@ -10,6 +14,15 @@ namespace WebDriver3
     [Parallelizable(ParallelScope.All)]
     public class WebDriverTests
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(WebDriverTests));
+
+        [OneTimeSetUp]
+        public void SetupLogging()
+        {
+            var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+        }
+
         [Test]
         [TestCase("", "anypassword", "Username is required", TestName = "Test1 - Empty Username")]
         [TestCase("anyuser", "", "Password is required", TestName = "Test2 - Empty Password")]
@@ -34,6 +47,8 @@ namespace WebDriver3
         {
             try
             {
+                log.Info("Starting test with Username: " + username + " and Password: " + password);
+
                 // Given: The user is on the login page
                 driver.Navigate().GoToUrl("https://www.saucedemo.com/");
                 driver.Manage().Window.Maximize();
@@ -64,7 +79,7 @@ namespace WebDriver3
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Test failed with exception: {ex.Message}");
+                log.Error("Test failed with exception: ", ex);
             }
             finally
             {
@@ -77,20 +92,13 @@ namespace WebDriver3
         {
             try
             {
-                // Then: The system should display an error message
                 IWebElement errorMessage = driver.FindElement(By.CssSelector("h3[data-test='error']"));
-                if (errorMessage.Text.Contains(expectedMessage))
-                {
-                    Console.WriteLine($"Error message validated: '{expectedMessage}'");
-                }
-                else
-                {
-                    Console.WriteLine($"Error validation failed. Expected: '{expectedMessage}', but found: {errorMessage.Text}");
-                }
+                errorMessage.Text.Should().Contain(expectedMessage);
+                log.Info($"Error message validated: '{expectedMessage}'");
             }
-            catch (NoSuchElementException)
+            catch (NoSuchElementException ex)
             {
-                Console.WriteLine("Error message not found.");
+                log.Error("Error message not found.", ex);
             }
         }
 
@@ -98,21 +106,13 @@ namespace WebDriver3
         {
             try
             {
-                // Then: The user should be redirected to the dashboard
                 string actualTitle = driver.Title;
-
-                if (actualTitle.Equals(expectedTitle))
-                {
-                    Console.WriteLine($"Title validated: '{expectedTitle}'");
-                }
-                else
-                {
-                    Console.WriteLine($"Title validation failed. Expected: '{expectedTitle}', but found: {actualTitle}");
-                }
+                actualTitle.Should().Be(expectedTitle);
+                log.Info($"Title validated: '{expectedTitle}'");
             }
-            catch (NoSuchElementException)
+            catch (NoSuchElementException ex)
             {
-                Console.WriteLine("Title element not found.");
+                log.Error("Title element not found.", ex);
             }
         }
     }
