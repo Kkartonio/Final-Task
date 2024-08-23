@@ -17,22 +17,22 @@ namespace WebDriver3.Pages
 
         public void EnterUsername(string username)
         {
-            TxtName.SendKeys(username);  // Вводимо ім'я користувача
+            TxtName.SendKeys(username);
         }
 
         public void EnterPassword(string password)
         {
-            TxtPass.SendKeys(password);  // Вводимо пароль
+            TxtPass.SendKeys(password);
         }
 
         public void Submit()
         {
-            TxtPass.SendKeys(Keys.Enter);  // Надсилаємо форму натисканням Enter
+            TxtPass.SendKeys(Keys.Enter);
         }
 
         public string GetErrorMessage()
         {
-            return ErrorMessage.Text;  // Отримуємо текст повідомлення про помилку
+            return ErrorMessage.Text;
         }
     }
 

@@ -35,7 +35,6 @@ namespace WebDriver3.Hooks
                     throw new ArgumentException($"Unsupported browser: {browser}");
             }
 
-            // Реєструємо драйвер в контейнері SpecFlow
             _objectContainer.RegisterInstanceAs<IWebDriver>(_driver);
         }
 
