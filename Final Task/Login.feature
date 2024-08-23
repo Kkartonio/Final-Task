@@ -14,5 +14,5 @@ Feature: Login
 
     Examples:
       | username       | password      | errorMessage            |
-      | ""             | anypassword   | Username is required    |
-      | anyuser        | ""            | Password is required    |
+      | ""             | à             | Username is required    |
+      | à              | ""            | Password is required    |

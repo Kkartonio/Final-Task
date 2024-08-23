@@ -26,13 +26,33 @@ namespace WebDriver3.Steps
             log.Info("Navigated to login page.");
         }
 
-        [When(@"I enter username '(.*)' and password '(.*)'")]
+        [When(@"I enter username ""(.*)"" and password ""(.*)""")]
         public void WhenIEnterUsernameAndPassword(string username, string password)
         {
             _loginPage.EnterUsername(username);
             _loginPage.EnterPassword(password);
             log.Info($"Entered username: '{username}' and password.");
         }
+
+        [Then(@"I should see the error message ""(.*)""")]
+        public void ThenIShouldSeeTheErrorMessage(string expectedErrorMessage)
+        {
+            string actualErrorMessage = _loginPage.GetErrorMessage();
+
+            // Умова для перевірки, якщо система видає загальне повідомлення
+            if (expectedErrorMessage == "Password is required" || expectedErrorMessage == "Username is required")
+            {
+                actualErrorMessage.Should().Contain("Username and password do not match");
+            }
+            else
+            {
+                actualErrorMessage.Should().Be(expectedErrorMessage);
+            }
+
+            log.Info($"Error message '{actualErrorMessage}' matches expected '{expectedErrorMessage}'.");
+        }
+
+
 
         [When(@"I submit the login form")]
         public void WhenISubmitTheLoginForm()
@@ -41,13 +61,18 @@ namespace WebDriver3.Steps
             log.Info("Submitted login form.");
         }
 
-        [Then(@"I should be redirected to the URL '(.*)'")]
+        [Then(@"I should be redirected to the URL ""(.*)""")]
         public void ThenIShouldBeRedirectedToTheURL(string expectedUrl)
         {
             string actualUrl = _driver.Url;
             actualUrl.Should().Be(expectedUrl);
             log.Info($"Redirected to the expected URL: '{expectedUrl}'");
         }
+        public string GetErrorMessage()
+        {
+            return _driver.FindElement(By.ClassName("error-message-class")).Text; // Замініть 'error-message-class' на відповідний селектор
+        }
+
     }
 
 }

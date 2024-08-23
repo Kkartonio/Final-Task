@@ -108,8 +108,8 @@ namespace Final_Task
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Invalid Login")]
-        [NUnit.Framework.TestCaseAttribute("\"\"", "anypassword", "Username is required", null)]
-        [NUnit.Framework.TestCaseAttribute("anyuser", "\"\"", "Password is required", null)]
+        [NUnit.Framework.TestCaseAttribute("\"\"", "�", "Username is required", null)]
+        [NUnit.Framework.TestCaseAttribute("�", "\"\"", "Password is required", null)]
         public void InvalidLogin(string username, string password, string errorMessage, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
